@@ -33,8 +33,9 @@ def save_data():
         }, f, indent=2)
 
 # Categories
-categories = ["Food & Drink", "Rent", "Transportation", "Shopping", "Entertainment", 
-              "Bills & Utilities", "Healthcare", "Salary", "Other"]
+categories = ["Food & Drink", "Rent", "Transportation", "Shopping", 
+              "Entertainment", "Bills & Utilities", "Healthcare", 
+              "Salary", "Other"]
 
 st.header("Add a Transaction")
 col1, col2 = st.columns(2)
@@ -63,10 +64,7 @@ if st.button("Add Transaction", type="primary"):
             })
             save_data()
             st.success(f"✅ {trans_type} added!")
-            
-            # Clear description field
-            st.session_state.desc_input = ""
-            
+            st.session_state.desc_input = ""   # Clear description
             time.sleep(0.6)
             st.rerun()
     else:
@@ -76,7 +74,7 @@ if st.button("Add Transaction", type="primary"):
 st.header("Current Balance")
 st.metric(label="💵 Remaining", value=f"${st.session_state.balance:.2f}")
 
-# Pie Chart (Debits by Category)
+# Pie Chart - Spending Breakdown (only debits)
 st.header("Spending Breakdown")
 debit_transactions = [t for t in st.session_state.transactions if t["type"] == "Debit"]
 
@@ -89,10 +87,10 @@ if debit_transactions:
                  names="category", 
                  title="Debits by Category",
                  hole=0.4,
-                 color_discrete_sequence=px.colors.sequential.RdBu)
+                 color_discrete_sequence=px.colors.sequential.RdBu_r)
     st.plotly_chart(fig, use_container_width=True)
 else:
-    st.info("No debits yet — the pie chart will appear here once you add expenses.")
+    st.info("📊 Add some debit transactions above — your spending pie chart will appear here.")
 
 # Transaction History
 st.header("Transaction History")
@@ -110,7 +108,7 @@ if st.session_state.transactions:
     csv = df.to_csv(index=False).encode("utf-8")
     
     st.download_button(
-        label="📥 Download as CSV (for Excel)",
+        label="📥 Download as CSV (opens in Excel/Google Sheets)",
         data=csv,
         file_name="bank_transactions.csv",
         mime="text/csv",
@@ -119,4 +117,4 @@ if st.session_state.transactions:
 else:
     st.caption("No data to export yet.")
 
-st.caption("Wu Tang Killa Bees...We on the swarm!")
+st.caption("Wu Tang!")
