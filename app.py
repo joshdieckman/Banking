@@ -32,10 +32,6 @@ def save_data():
             "transactions": st.session_state.transactions
         }, f, indent=2)
 
-# Callback to clear the description field safely
-def clear_description():
-    st.session_state.desc_input = ""
-
 # Categories
 categories = ["Food & Drink", "Rent", "Transportation", "Shopping", 
               "Entertainment", "Bills & Utilities", "Healthcare", 
@@ -51,7 +47,7 @@ with col2:
 description = st.text_input("Description", key="desc_input", placeholder="e.g. Groceries, Paycheck")
 category = st.selectbox("Category", categories)
 
-if st.button("Add Transaction", type="primary", on_click=clear_description):
+if st.button("Add Transaction", type="primary"):
     if description.strip():
         sign = -1 if "Debit" in trans_type else 1
         new_balance = st.session_state.balance + (sign * amount)
@@ -59,6 +55,7 @@ if st.button("Add Transaction", type="primary", on_click=clear_description):
         if new_balance < 0 and sign == -1:
             st.error("❌ Not enough balance!")
         else:
+            # Add the transaction FIRST
             st.session_state.balance = new_balance
             st.session_state.transactions.append({
                 "type": "Debit" if sign == -1 else "Credit",
@@ -68,6 +65,10 @@ if st.button("Add Transaction", type="primary", on_click=clear_description):
             })
             save_data()
             st.success(f"✅ {trans_type} added!")
+            
+            # Now safely clear the description field
+            st.session_state.desc_input = ""
+            
             time.sleep(0.5)
             st.rerun()
     else:
