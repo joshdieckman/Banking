@@ -64,8 +64,11 @@ if st.button("Add Transaction", type="primary"):
             })
             save_data()
             st.success(f"✅ {trans_type} added!")
-            st.session_state.desc_input = ""   # Clear description
-            time.sleep(0.6)
+            
+            # Clear the description field safely
+            st.session_state["desc_input"] = ""
+            
+            time.sleep(0.5)
             st.rerun()
     else:
         st.error("Please enter a description!")
@@ -74,7 +77,7 @@ if st.button("Add Transaction", type="primary"):
 st.header("Current Balance")
 st.metric(label="💵 Remaining", value=f"${st.session_state.balance:.2f}")
 
-# Pie Chart - Spending Breakdown (only debits)
+# Pie Chart - Spending Breakdown
 st.header("Spending Breakdown")
 debit_transactions = [t for t in st.session_state.transactions if t["type"] == "Debit"]
 
@@ -117,4 +120,4 @@ if st.session_state.transactions:
 else:
     st.caption("No data to export yet.")
 
-st.caption("Wu Tang!")
+st.caption("Wu Tang Killa Bees!")
