@@ -32,6 +32,10 @@ def save_data():
             "transactions": st.session_state.transactions
         }, f, indent=2)
 
+# Callback to clear the description field safely
+def clear_description():
+    st.session_state.desc_input = ""
+
 # Categories
 categories = ["Food & Drink", "Rent", "Transportation", "Shopping", 
               "Entertainment", "Bills & Utilities", "Healthcare", 
@@ -47,7 +51,7 @@ with col2:
 description = st.text_input("Description", key="desc_input", placeholder="e.g. Groceries, Paycheck")
 category = st.selectbox("Category", categories)
 
-if st.button("Add Transaction", type="primary"):
+if st.button("Add Transaction", type="primary", on_click=clear_description):
     if description.strip():
         sign = -1 if "Debit" in trans_type else 1
         new_balance = st.session_state.balance + (sign * amount)
@@ -64,10 +68,6 @@ if st.button("Add Transaction", type="primary"):
             })
             save_data()
             st.success(f"✅ {trans_type} added!")
-            
-            # Clear the description field safely
-            st.session_state["desc_input"] = ""
-            
             time.sleep(0.5)
             st.rerun()
     else:
@@ -77,7 +77,7 @@ if st.button("Add Transaction", type="primary"):
 st.header("Current Balance")
 st.metric(label="💵 Remaining", value=f"${st.session_state.balance:.2f}")
 
-# Pie Chart - Spending Breakdown
+# Pie Chart
 st.header("Spending Breakdown")
 debit_transactions = [t for t in st.session_state.transactions if t["type"] == "Debit"]
 
@@ -120,4 +120,4 @@ if st.session_state.transactions:
 else:
     st.caption("No data to export yet.")
 
-st.caption("Wu Tang Killa Bees!")
+st.caption("Made with ❤️ in Streamlit Community Cloud")
